@@ -6,6 +6,7 @@
     }
   },
   "require": {
-    "monolog/monolog": "^1.18"
+    "monolog/monolog": "^1.18",
+    "zendframework/zend-json": "^2.6.1"
   }
 }

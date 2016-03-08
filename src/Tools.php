@@ -16,24 +16,34 @@ class Tools
         static::$logger = new Logger($name);
         static::$logFile = $path;
 
-
-        if(!file_exists($path)){
-            $pathParts = array_splice(explode(DIRECTORY_SEPARATOR, $path), -1);
-            mkdir(implode(DIRECTORY_SEPARATOR, $pathParts), 0777, true);
+        if(empty($path)){
+            throw new \ErrorException("Logfile path is empty!");
+        }
+        
+        if( !file_exists($path)){
+            mkdir(pathinfo($path)["dirname"], 0777, true);
             touch($path);
         }
 
+        //TODO: allow for separate files per log level;
         $logs = [
             "debug" => new StreamHandler($path, Logger::DEBUG),
             "info" => new StreamHandler($path, Logger::INFO),
+            "notice" => new StreamHandler($path, Logger::NOTICE),
             "warn" => new StreamHandler($path, Logger::WARNING),
             "error" => new StreamHandler($path, Logger::ERROR),
+            "critical" => new StreamHandler($path, Logger::CRITICAL),
+            "alert" => new StreamHandler($path, Logger::ALERT),
+            "emergency" => new StreamHandler($path, Logger::EMERGENCY)
         ];
+
         $formatter = new LineFormatter("%datetime%: %level_name% :: %message% | %context% | %extra%\n", "D M j Y, g:i A");
         foreach ($logs as $log => $handler) {
             $handler->setFormatter($formatter);
             static::$logger->pushHandler($handler);
         }
+
+        return static::$logger;
     }
 
     private static function getLogger()
@@ -41,9 +51,7 @@ class Tools
         if (static::$logger instanceof Logger) {
             return static::$logger;
         }
-        static::initLogger();
-        return static::$logger;
-
+        return static::initLogger();
     }
 
     public static function logArray($data, $message=""){

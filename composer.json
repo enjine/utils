@@ -7,6 +7,11 @@
       "email": "alex@bitwisewebservices.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "Enjine\\Utils\\": "src/"
+    }
+  },
   "require": {
     "monolog/monolog": "^1.18"
   }

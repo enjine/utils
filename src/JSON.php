@@ -2,9 +2,6 @@
 
 namespace Enjine\Utils;
 
-use \Zend\Json\Json as ZendJSON;
-use \Zend\Json\Exception\RuntimeException;
-
 class JSON {
 
     protected static $_messages = array(
@@ -17,23 +14,23 @@ class JSON {
     );
 
     public static function encode($value, $options = 0) {
-        $result = ZendJSON::encode($value, $options);
+        $result = json_encode($value, $options);
 
         if($result)  {
             return $result;
         }
 
-        throw new RuntimeException(static::$_messages[json_last_error()]);
+        throw new \RuntimeException(static::$_messages[json_last_error()]);
     }
 
     public static function decode($json, $assoc = false) {
-        $result = ZendJSON::decode($json, $assoc);
+        $result = json_decode($json, $assoc);
 
         if($result) {
             return $result;
         }
 
-        throw new RuntimeException(static::$_messages[json_last_error()]);
+        throw new \RuntimeException(static::$_messages[json_last_error()]);
     }
 
 }

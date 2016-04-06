@@ -19,8 +19,8 @@ class Tools
         if(empty($path)){
             throw new \ErrorException("Logfile path is empty!");
         }
-        
-        if( !file_exists($path)){
+
+        if(!file_exists($path)){
             mkdir(pathinfo($path)["dirname"], 0777, true);
             touch($path);
         }

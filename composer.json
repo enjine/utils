@@ -1,12 +1,13 @@
 {
   "name": "enjine/utils",
-  "autoload": {
-    "psr-4": {
-      "Enjine\\Utils\\": "src/"
+  "description": "Common utility functions.",
+  "authors": [
+    {
+      "name": "Alessandro Di Candia",
+      "email": "alex@bitwisewebservices.com"
     }
-  },
+  ],
   "require": {
-    "monolog/monolog": "^1.18",
-    "zendframework/zend-json": "^2.6.1"
+    "monolog/monolog": "^1.18"
   }
 }

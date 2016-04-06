@@ -1,0 +1,19 @@
+{
+  "name": "enjine/utils",
+  "description": "Tradebox Proxy Service",
+  "authors": [
+    {
+      "name": "Alessandro Di Candia",
+      "email": "alex@bitwisewebservices.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Enjine\\Utils\\": "src/"
+    }
+  },
+  "require": {
+    "monolog/monolog": "^1.18",
+    "zendframework/zend-json": "^2.6.1"
+  }
+}

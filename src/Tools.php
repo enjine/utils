@@ -8,39 +8,44 @@ use Monolog\Formatter\LineFormatter;
 
 class Tools
 {
+    private static $LOG_LEVELS = [
+        "debug" => Logger::DEBUG,
+        "info" => Logger::INFO,
+        "notice" => Logger::NOTICE,
+        "warn" => Logger::WARNING,
+        "error" => Logger::ERROR,
+        "critical" => Logger::CRITICAL,
+        "alert" => Logger::ALERT,
+        "emergency" => Logger::EMERGENCY
+    ];
 
     private static $logger,
-                    $logFile;
+                    $logsDir;
 
-    public static function initLogger($name="enjine", $path="/var/log/enjine.log"){
+    public static function initLogger($name="enjine", $dir="/var/log"){
+        if(!is_dir($dir)){
+            throw new \ErrorException("Logs path does not exist!");
+        }
+
         static::$logger = new Logger($name);
-        static::$logFile = $path;
+        static::$logsDir = $dir;
 
-        if(empty($path)){
-            throw new \ErrorException("Logfile path is empty!");
-        }
-
-        if(!file_exists($path)){
-            mkdir(pathinfo($path)["dirname"], 0777, true);
-            touch($path);
-        }
-
-        //TODO: allow for separate files per log level;
-        $logs = [
-            "debug" => new StreamHandler($path, Logger::DEBUG),
-            "info" => new StreamHandler($path, Logger::INFO),
-            "notice" => new StreamHandler($path, Logger::NOTICE),
-            "warn" => new StreamHandler($path, Logger::WARNING),
-            "error" => new StreamHandler($path, Logger::ERROR),
-            "critical" => new StreamHandler($path, Logger::CRITICAL),
-            "alert" => new StreamHandler($path, Logger::ALERT),
-            "emergency" => new StreamHandler($path, Logger::EMERGENCY)
-        ];
-
+        $handlers = [];
         $formatter = new LineFormatter("%datetime%: %level_name% :: %message% | %context% | %extra%\n", "D M j Y, g:i A");
-        foreach ($logs as $log => $handler) {
-            $handler->setFormatter($formatter);
-            static::$logger->pushHandler($handler);
+
+        foreach(static::$LOG_LEVELS as $label => $level){
+            $logFile = static::$logsDir . DIRECTORY_SEPARATOR . "{$label}.log";
+            $handlers[$label] = new StreamHandler($logFile, $level);
+            $handlers[$label]->setFormatter($formatter);
+            static::$logger->pushHandler($handlers[$label]);
+
+            if(!file_exists($logFile)){
+                $d = pathinfo($logFile)["dirname"];
+                if(!is_dir($d)){
+                    mkdir($d, 0664, true);
+                }
+                touch($logFile);
+            }
         }
 
         return static::$logger;
@@ -54,8 +59,18 @@ class Tools
         return static::initLogger();
     }
 
+    public static function getLogsDir()
+    {
+        return static::$logsDir;
+    }
+
     public static function logArray($data, $message=""){
         static::logInfo($message, $data);
+    }
+
+    public static function logDebug($message="", $data=[])
+    {
+        static::getLogger()->addDebug($message, $data);
     }
 
     public static function logInfo($message, $data=[])
@@ -87,5 +102,12 @@ class Tools
         echo "<pre>";
         print_r($data);
         echo "</pre>";
+    }
+
+    public static function HMACVerify($test, $string="", $secret="", $algo="sha256"){
+        if(strtoupper(hash_hmac($algo, $string, $secret)) === strtoupper($test)){
+            return true;
+        };
+        throw new \ErrorException("Unable to verify HMAC hash!");
     }
 }

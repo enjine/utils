@@ -105,9 +105,9 @@ class Tools
     }
 
     public static function HMACVerify($test, $string="", $secret="", $algo="sha256"){
-        if(strtoupper(hash_hmac($algo, $string, $secret)) === strtoupper($test)){
+        if(strtolower(hash_hmac($algo, $string, $secret)) === strtolower($test)){
             return true;
         };
-        throw new \ErrorException("Unable to verify HMAC hash!");
+        throw new \ErrorException("Unable to verify HMAC hash! {$test} != {$string} ~ {$secret}");
     }
 }

@@ -35,9 +35,6 @@ class Tools
 
         foreach(static::$LOG_LEVELS as $label => $level){
             $logFile = static::$logsDir . DIRECTORY_SEPARATOR . "{$label}.log";
-            $handlers[$label] = new StreamHandler($logFile, $level);
-            $handlers[$label]->setFormatter($formatter);
-            static::$logger->pushHandler($handlers[$label]);
 
             if(!file_exists($logFile)){
                 $d = pathinfo($logFile)["dirname"];
@@ -46,6 +43,12 @@ class Tools
                 }
                 touch($logFile);
             }
+
+            $handlers[$label] = new StreamHandler($logFile, $level);
+            $handlers[$label]->setFormatter($formatter);
+            static::$logger->pushHandler($handlers[$label]);
+
+
         }
 
         return static::$logger;

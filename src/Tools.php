@@ -20,7 +20,8 @@ class Tools
     ];
 
     private static $logger,
-                    $logsDir;
+                    $logsDir,
+                    $logFile;
 
     public static function initLogger($name="enjine", $dir="/var/log"){
         if(!is_dir($dir)){

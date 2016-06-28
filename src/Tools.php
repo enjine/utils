@@ -35,17 +35,17 @@ class Tools
         $formatter = new LineFormatter("%datetime%: %level_name% :: %message% | %context% | %extra%\n", "D M j Y, g:i A");
 
         foreach(static::$LOG_LEVELS as $label => $level){
-            $logFile = static::$logsDir . DIRECTORY_SEPARATOR . "{$label}.log";
+            static::$logFile = static::$logsDir . DIRECTORY_SEPARATOR . "{$label}.log";
 
-            if(!file_exists($logFile)){
-                $d = pathinfo($logFile)["dirname"];
+            if(!file_exists(static::$logFile)){
+                $d = pathinfo(static::$logFile)["dirname"];
                 if(!is_dir($d)){
                     mkdir($d, 0664, true);
                 }
-                touch($logFile);
+                touch(static::$logFile);
             }
 
-            $handlers[$label] = new StreamHandler($logFile, $level);
+            $handlers[$label] = new StreamHandler(static::$logFile, $level);
             $handlers[$label]->setFormatter($formatter);
             static::$logger->pushHandler($handlers[$label]);
 
@@ -109,9 +109,10 @@ class Tools
     }
 
     public static function HMACVerify($test, $string="", $secret="", $algo="sha256"){
-        if(strtolower(hash_hmac($algo, $string, $secret)) === strtolower($test)){
+        $hashed = hash_hmac($algo, $string, $secret);
+        if(strtolower($hashed) === strtolower($test)){
             return true;
         };
-        throw new \ErrorException("Unable to verify HMAC hash! {$test} != {$string} ~ {$secret}");
+        throw new \ErrorException("Unable to verify HMAC hash! {$test} != {$hashed}");
     }
 }

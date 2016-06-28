@@ -1,6 +1,6 @@
 {
   "name": "enjine/utils",
-  "description": "Tradebox Proxy Service",
+  "description": "Common utility functions.",
   "authors": [
     {
       "name": "Alessandro Di Candia",
@@ -13,7 +13,6 @@
     }
   },
   "require": {
-    "monolog/monolog": "^1.18",
-    "zendframework/zend-json": "^2.6.1"
+    "monolog/monolog": "^1.18"
   }
 }

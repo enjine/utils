@@ -30,7 +30,7 @@ class JSON {
             return $result;
         }
 
-        throw new \RuntimeException(static::$_messages[json_last_error()]);
+        throw new \RuntimeException(__METHOD__ . "() -  ".static::$_messages[json_last_error()]);
     }
 
 }
